@@ -8,7 +8,7 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.SecureRandom;
-import java.util.Base64;
+import android.util.Base64;
 
 @Kroll.proxy(creatableInModule=TiCryptModule.class)
 public class CryptoAESProxy extends KrollProxy{
@@ -26,7 +26,7 @@ public class CryptoAESProxy extends KrollProxy{
             SecureRandom secureRandom = new SecureRandom();
             keyGen.init(secureRandom);
             SecretKey secretKey = keyGen.generateKey();
-            key = Base64.getEncoder().encodeToString(secretKey.getEncoded());
+            key = Base64.encodeToString(secretKey.getEncoded(), Base64.NO_WRAP);
         }catch (Exception ex){
             key = ex.getMessage();
         }
@@ -41,7 +41,7 @@ public class CryptoAESProxy extends KrollProxy{
             Cipher cipher = Cipher.getInstance("AES");
             cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
             byte[] encrypted = cipher.doFinal(value.getBytes("UTF-8"));
-            cryptedData = Base64.getEncoder().encodeToString(encrypted);
+            cryptedData = Base64.encodeToString(encrypted, Base64.NO_WRAP);
         }catch (Exception ex){
             cryptedData = ex.getMessage();
         }
@@ -55,7 +55,7 @@ public class CryptoAESProxy extends KrollProxy{
             SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes(), "AES");
             Cipher cipher = Cipher.getInstance("AES");
             cipher.init(Cipher.DECRYPT_MODE, skeySpec);
-            byte[] decrypted = cipher.doFinal(Base64.getDecoder().decode(encrypted.getBytes()));
+            byte[] decrypted = cipher.doFinal(Base64.decode(encrypted, 0));
             cryptedData = new String(decrypted, "UTF-8");
 
         }catch (Exception ex){
